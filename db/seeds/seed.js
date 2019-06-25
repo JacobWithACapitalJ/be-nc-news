@@ -5,16 +5,6 @@ const {
   userData
 } = require("../index.js");
 const { formatDate, formatComments, makeRefObj } = require("../utils/utils");
-//modifiying timstamps of articles data
-article_time = articleData.map(article => {
-  return article.created_at;
-});
-timesList = formatDate(article_time);
-let modifiedArticleData = articleData.map((article, index) => {
-  article.created_at = timesList[index];
-  return article;
-});
-
 //seeding database
 exports.seed = function(knex, Promise) {
   return knex.migrate //migrating database
@@ -26,26 +16,17 @@ exports.seed = function(knex, Promise) {
 
       return Promise.all([topicsInsertions, usersInsertions])
         .then(() => {
+          modifiedArticleData = formatDate(articleData);
           return knex("articles")
             .insert(modifiedArticleData)
             .returning("*");
         })
         .then(articleRows => {
           const articleRef = makeRefObj(articleRows);
-          const formattedComments = formatComments(commentData, articleRef);
+          let formattedComments = formatDate(commentData);
+          formattedComments = formatComments(formattedComments, articleRef);
 
-          comment_time = formattedComments.map(comment => {
-            return comment.created_at;
-          });
-          timesList = formatDate(comment_time);
-          let modifiedformattedComments = formattedComments.map(
-            (comment, index) => {
-              comment.created_at = timesList[index];
-              return comment;
-            }
-          );
-
-          return knex("comments").insert(modifiedformattedComments);
+          return knex("comments").insert(formattedComments);
         });
     });
 };

@@ -23,5 +23,14 @@ describe("/api", () => {
           return result.body;
         });
     });
+
+    it("returns with the topics data", () => {
+      return request
+        .get("/api/topics")
+        .expect(200)
+        .then(result => {
+          expect(result.body[0]).to.have.keys("slug", "description");
+        });
+    });
   });
 });

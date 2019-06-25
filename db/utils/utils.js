@@ -1,8 +1,13 @@
 exports.formatDate = list => {
-  list = list.map(time => {
-    return (time = new Date(time).toUTCString());
+  let formatedList = [];
+  list.forEach((obj, index) => {
+    formatedList[index] = { ...obj };
+    formatedList[index].created_at = new Date(
+      formatedList[index].created_at
+    ).toUTCString();
   });
-  return list;
+
+  return formatedList;
 };
 
 exports.makeRefObj = objArray => {
