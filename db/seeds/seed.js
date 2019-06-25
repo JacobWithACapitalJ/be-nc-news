@@ -5,26 +5,26 @@ const {
   userData
 } = require("../index.js");
 const { formatDate, formatComments, makeRefObj } = require("../utils/utils");
+//modifiying timstamps of articles data
+article_time = articleData.map(article => {
+  return article.created_at;
+});
+timesList = formatDate(article_time);
+let modifiedArticleData = articleData.map((article, index) => {
+  article.created_at = timesList[index];
+  return article;
+});
 
+//seeding database
 exports.seed = function(knex, Promise) {
   const topicsInsertions = knex("topics").insert(topicData);
   const usersInsertions = knex("users").insert(userData);
 
   return Promise.all([topicsInsertions, usersInsertions])
     .then(() => {
-      article_time = articleData.map(article => {
-        return article.created_at;
-      });
-      timesList = formatDate(article_time);
-      modifiedArticleData = articleData.map((article, index) => {
-        article.created_at = timesList[index];
-      });
       return knex("articles")
         .insert(modifiedArticleData)
-        .then(articles => {
-          console.log(articles);
-          return articles;
-        });
+        .returning("*");
     })
     .then(articleRows => {
       /* 
