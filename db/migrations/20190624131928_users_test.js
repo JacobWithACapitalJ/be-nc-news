@@ -1,15 +1,14 @@
 exports.up = function(knex, Promise) {
-  console.log("creating users_test table...");
-  return knex.schema.createTable("users_test", usersTest => {
-    usersTest.string("username").primary();
-    usersTest.unique("username");
+  console.log("creating users table...");
+  return knex.schema.createTable("users", users => {
+    users.string("username").primary();
 
-    usersTest.string("avatar_url", 256);
-    usersTest.string("name");
+    users.string("avatar_url", 256);
+    users.string("name");
   });
 };
 
 exports.down = function(knex, Promise) {
-  console.log("removing users_tet table");
-  return knex.schema.dropTable("users_test");
+  console.log("removing users table...");
+  return knex.schema.dropTable("users");
 };

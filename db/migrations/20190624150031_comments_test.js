@@ -1,20 +1,24 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable("comments_test", commentsTest => {
-    commentsTest.increments("comment_id").primary();
-    commentsTest.integer("votes").defaultTo(0);
-    commentsTest
+  console.log("creating comments table...");
+  return knex.schema.createTable("comments", comments => {
+    comments.increments("comment_id").primary();
+    comments.integer("votes").defaultTo(0);
+    comments
       .integer("article_id")
       .references("article_id")
-      .inTable("articles_test")
+      .inTable("articles")
       .notNullable();
-    commentsTest
+    comments
       .string("author")
       .references("username")
-      .inTable("users_test")
+      .inTable("users")
       .notNullable();
-    commentsTest.timestamp("created_at").defaultTo(knex.fn.now());
-    commentsTest.string("body", 1000).notNullable();
+    comments.timestamp("created_at").defaultTo(knex.fn.now());
+    comments.string("body", 1000).notNullable();
   });
 };
 
-exports.down = function(knex, Promise) {};
+exports.down = function(knex, Promise) {
+  console.log("removing comments table...");
+  return knex.schema.dropTable("comments");
+};

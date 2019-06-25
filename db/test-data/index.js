@@ -1,11 +1,11 @@
-const articleTestData = require("./articles");
-const commentTestData = require("./comments");
-const topicTestData = require("./topics");
-const userTestData = require("./users");
+const articleData = require("./articles");
+const commentData = require("./comments");
+const topicData = require("./topics");
+const userData = require("./users");
 
 module.exports = {
-  articleTestData,
-  commentTestData,
-  topicTestData,
-  userTestData
+  articleData,
+  commentData,
+  topicData,
+  userData
 };

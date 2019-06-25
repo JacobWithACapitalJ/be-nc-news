@@ -1,21 +1,25 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable("articles_test", articlesTest => {
-    articlesTest.increments("article_id").primary();
-    articlesTest.string("title").notNullable();
-    articlesTest.string("body", 1000).notNullable();
-    articlesTest.integer("votes").defaultTo(0);
-    articlesTest
+  console.log("creating articles table...");
+  return knex.schema.createTable("articles", articles => {
+    articles.increments("article_id").primary();
+    articles.string("title").notNullable();
+    articles.string("body", 1000).notNullable();
+    articles.integer("votes").defaultTo(0);
+    articles
       .string("topic")
-      .references("topic")
-      .inTable("topics_test")
+      .references("slug")
+      .inTable("topics")
       .notNullable();
-    articlesTest
+    articles
       .string("author")
       .references("username")
-      .inTable("users_test")
+      .inTable("users")
       .notNullable();
-    articlesTest.timestamp("created_at").defaultTo(knex.fn.now());
+    articles.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
 
-exports.down = function(knex, Promise) {};
+exports.down = function(knex, Promise) {
+  console.log("removing articles table...");
+  return knex.schema.dropTable("articles");
+};

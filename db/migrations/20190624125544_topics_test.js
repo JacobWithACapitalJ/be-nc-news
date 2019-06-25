@@ -1,13 +1,12 @@
 exports.up = function(knex, Promise) {
-  console.log("creating topics_test table...");
-  return knex.schema.createTable("topics_test", topicsTest => {
-    topicsTest.string("topic").primary();
-    topicsTest.unique("topic");
-    topicsTest.string("description", 1000).notNullable();
+  console.log("creating topics table...");
+  return knex.schema.createTable("topics", topics => {
+    topics.string("description", 1000).notNullable();
+    topics.string("slug").primary();
   });
 };
 
 exports.down = function(knex, Promise) {
-  console.log("removing topics_test table...");
-  return knex.schema.dropTable("topics_test");
+  console.log("removing topics table...");
+  return knex.schema.dropTable("topics");
 };
