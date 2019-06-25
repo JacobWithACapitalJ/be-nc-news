@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { formatDate, makeRefObj, formatComments } = require("../db/utils/utils");
 
-describe.only("formatDate", () => {
+describe("formatDate", () => {
   it("when passed 0, it returns with the epoch date", () => {
     expect(formatDate([0])).to.eql(["Thu, 01 Jan 1970 00:00:00 GMT"]);
   });
@@ -13,66 +13,97 @@ describe.only("formatDate", () => {
 });
 
 describe("makeRefObj", () => {
-  it("returns an empty object, when passed an empty array", () => {
-    const input = [];
-    const actual = makeRefObj(input);
-    const expected = {};
-    expect(actual).to.eql(expected);
+  it("makes an key value pair from the values of article_id and title for a single object in an array", () => {
+    expect(makeRefObj([{ article_id: 1, title: "A" }])).to.eql({ A: 1 });
   });
-  it("returns an object with a name key, and a phone number", () => {
-    const input = [
-      { name: "vel", phoneNumber: "01134445566", address: "Northcoders, Leeds" }
+  it("returns a ref object for multiple objects in an array", () => {
+    const array = [
+      {
+        article_id: 1,
+        title: "A",
+        topic: "mitch",
+        author: "a",
+        body: "I find this existence challenging",
+        created_at: 1542284514171,
+        votes: 100
+      },
+      {
+        article_id: 2,
+        title: "B",
+        topic: "mitch",
+        author: "a",
+        body: "I find this existence challenging",
+        created_at: 1542284514171,
+        votes: 100
+      }
     ];
-    const actual = makeRefObj(input);
-    const expected = {
-      vel: "01134445566"
-    };
-    expect(actual).to.eql(expected);
-  });
-  it("works for a filled array of objects", () => {
-    const input = [
-      {
-        name: "vel",
-        phoneNumber: "01134445566",
-        address: "Northcoders, Leeds"
-      },
-      {
-        name: "ant",
-        phoneNumber: "01612223344",
-        address: "Northcoders, Manchester"
-      },
-      { name: "mitch", phoneNumber: "07777777777", address: null }
-    ];
-    const actual = makeRefObj(input);
-    const expected = {
-      vel: "01134445566",
-      ant: "01612223344",
-      mitch: "07777777777"
-    };
-    expect(actual).to.eql(expected);
-  });
-  it("takes two keys as arguments to create a ref object", () => {
-    const input = [
-      {
-        name: "vel",
-        phoneNumber: "01134445566",
-        address: "Northcoders, Leeds"
-      },
-      {
-        name: "ant",
-        phoneNumber: "01612223344",
-        address: "Northcoders, Manchester"
-      },
-      { name: "mitch", phoneNumber: "07777777777", address: null }
-    ];
-    const actual = makeRefObj(input, "name", "address");
-    const expected = {
-      vel: "Northcoders, Leeds",
-      ant: "Northcoders, Manchester",
-      mitch: null
-    };
-    expect(actual).to.eql(expected);
+    expect(makeRefObj(array)).to.eql({ A: 1, B: 2 });
   });
 });
 
-describe("formatComments", () => {});
+describe.only("formatComments", () => {
+  it("replaces 'created_by' with author", () => {
+    const array = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389
+      }
+    ];
+    expect(formatComments(array)[0]).to.include.keys("author");
+  });
+  it('replaces key "belongs_to" to "article_id"', () => {
+    const array = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389
+      }
+    ];
+    expect(formatComments(array)[0]).to.include.keys("article_id");
+  });
+  it('replaces the values of "belongs_to" with the values in articleRef', () => {
+    const array = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389
+      }
+    ];
+    const ref = { "They're not exactly dogs, are they?": 1 };
+    const expected = formatComments(array, ref);
+    expect(expected[0].article_id).to.equal(1);
+  });
+  it("works for multiple objects in an array", () => {
+    it('replaces the values of "belongs_to" with the values in articleRef', () => {
+      const array = [
+        {
+          body: "hello",
+          belongs_to: "the world",
+          created_by: "butter_bridge",
+          votes: 16,
+          created_at: 1511354163389
+        },
+        {
+          body: "hi",
+          belongs_to: "northcoders",
+          created_by: "butter_bridge",
+          votes: 16,
+          created_at: 1511354163389
+        }
+      ];
+      const ref = { "the world": 1, northcoders: 2 };
+      const expected = formatComments(array, ref);
+      expect(expected[0].article_id).to.equal(1);
+    });
+  });
+});
