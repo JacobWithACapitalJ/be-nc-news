@@ -32,5 +32,15 @@ describe("/api", () => {
           expect(result.body[0]).to.have.keys("slug", "description");
         });
     });
+    describe("/:topic", () => {
+      it("returns with specific topic from slug", () => {
+        return request
+          .get("/api/topics/mitch")
+          .expect(200)
+          .then(result => {
+            expect(result.body[0].slug).to.eql("mitch");
+          });
+      });
+    });
   });
 });

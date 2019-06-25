@@ -1,2 +1,2 @@
-const getTopics = require("./get-topics");
-module.exports = { getTopics };
+const { getTopics, GetTopicSlug } = require("./get-topics");
+module.exports = { getTopics, GetTopicSlug };
