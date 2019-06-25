@@ -17,38 +17,35 @@ let modifiedArticleData = articleData.map((article, index) => {
 
 //seeding database
 exports.seed = function(knex, Promise) {
-  const topicsInsertions = knex("topics").insert(topicData);
-  const usersInsertions = knex("users").insert(userData);
-
-  return Promise.all([topicsInsertions, usersInsertions])
+  return knex.migrate //migrating database
+    .rollback()
+    .then(() => knex.migrate.latest())
     .then(() => {
-      return knex("articles")
-        .insert(modifiedArticleData)
-        .returning("*");
-    })
-    .then(articleRows => {
-      /* 
+      const topicsInsertions = knex("topics").insert(topicData);
+      const usersInsertions = knex("users").insert(userData);
 
-      Your comment data is currently in the incorrect format and will violate your SQL schema. 
+      return Promise.all([topicsInsertions, usersInsertions])
+        .then(() => {
+          return knex("articles")
+            .insert(modifiedArticleData)
+            .returning("*");
+        })
+        .then(articleRows => {
+          const articleRef = makeRefObj(articleRows);
+          const formattedComments = formatComments(commentData, articleRef);
 
-      Keys need renaming, values need changing, and most annoyingly, your comments currently only refer to the title of the article they belong to, not the id. 
-      
-      You will need to write and test the provided makeRefObj and formatComments utility functions to be able insert your comment data.
-      */
-      const articleRef = makeRefObj(articleRows);
-      const formattedComments = formatComments(commentData, articleRef);
+          comment_time = formattedComments.map(comment => {
+            return comment.created_at;
+          });
+          timesList = formatDate(comment_time);
+          let modifiedformattedComments = formattedComments.map(
+            (comment, index) => {
+              comment.created_at = timesList[index];
+              return comment;
+            }
+          );
 
-      comment_time = formattedComments.map(comment => {
-        return comment.created_at;
-      });
-      timesList = formatDate(comment_time);
-      let modifiedformattedComments = formattedComments.map(
-        (comment, index) => {
-          comment.created_at = timesList[index];
-          return comment;
-        }
-      );
-
-      return knex("comments").insert(modifiedformattedComments);
+          return knex("comments").insert(modifiedformattedComments);
+        });
     });
 };
