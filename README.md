@@ -122,12 +122,12 @@ Utilising your data manipulation skills, you will also need to complete the util
 Your server _must_ have the following endpoints:
 
 ```http
-GET /api/topics
+GET /api/topics ---XXX---
 
-GET /api/users/:username
+GET /api/users/:username ---XXX---
 
-GET /api/articles/:article_id
-PATCH /api/articles/:article_id
+GET /api/articles/:article_id ---XXX---
+PATCH /api/articles/:article_id ---XXX---
 
 POST /api/articles/:article_id/comments
 GET /api/articles/:article_id/comments

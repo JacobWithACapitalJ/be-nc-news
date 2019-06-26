@@ -4,7 +4,7 @@ function getArticles(req, res, next) {
   fetchArticles(article_id)
     .then(results => {
       if (results.length === 0) {
-        return Promise.reject({ msg: "not found" });
+        return Promise.reject({ code: 404, msg: "not found" });
       } else {
         res.status(200).send(results);
       }
