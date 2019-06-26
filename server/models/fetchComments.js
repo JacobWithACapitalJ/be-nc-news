@@ -2,7 +2,7 @@ const connection = require("./index");
 
 function fetchComments(article_id) {
   return connection
-    .select({ username: "author" }, "body")
+    .select("body", "votes", "created_at", "author", "comment_id")
     .from("comments")
     .where("article_id", "=", article_id)
     .returning("*")

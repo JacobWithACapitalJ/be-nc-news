@@ -177,7 +177,27 @@ describe("/api", () => {
             .get("/api/articles/1/comments")
             .expect(200)
             .then(results => {
-              expect(results.body[0]).to.have.keys("username", "body");
+              expect(results.body[0]).to.have.keys(
+                "body",
+                "votes",
+                "created_at",
+                "author",
+                "comment_id"
+              );
+            });
+        });
+        it("returns 404 when article_id is incorect", () => {
+          return request.get("/api/articles/99/comments").expect(404);
+        });
+      });
+      describe("POST", () => {
+        it("creates a new comment with keys username and body", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({ username: "butter_bridge", body: "this is just a test" })
+            .expect(201)
+            .then(result => {
+              expect(result.body[0]).includes.keys("comment_id");
             });
         });
       });
