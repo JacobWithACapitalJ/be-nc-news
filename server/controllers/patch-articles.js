@@ -6,7 +6,7 @@ function patchArticles(req, res, next) {
   if (!body.inc_votes) {
     return next({ code: 400, msg: "bad request" });
   } else if (typeof body.inc_votes !== "number") {
-    return next({ code: 405, msg: "method not allowed" });
+    return next({ code: 400, msg: "bad request" });
   }
   updateArticles(article_id, body)
     .then(result => {

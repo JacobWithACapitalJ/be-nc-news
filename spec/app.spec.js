@@ -126,7 +126,7 @@ describe("/api", () => {
         });
       });
     });
-    describe.only("PATCH", () => {
+    describe("PATCH", () => {
       describe("/:article_id", () => {
         it("returns with 201", () => {
           return request
@@ -159,13 +159,25 @@ describe("/api", () => {
               expect(result.error.text).to.equal("bad request");
             });
         });
-        it("responds with 405 error when body value is not an integer", () => {
+        it("responds with 400 error when body value is not an integer", () => {
           return request
             .patch("/api/articles/1")
             .send({ inc_votes: "hello" })
-            .expect(405)
+            .expect(400)
             .then(result => {
-              expect(result.error.text).to.equal("method not allowed");
+              expect(result.error.text).to.equal("bad request");
+            });
+        });
+      });
+    });
+    describe.only("/:article_id/comments", () => {
+      describe("GET", () => {
+        it("returns all comments for an article", () => {
+          return request
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then(results => {
+              expect(results.body[0]).to.have.keys("username", "body");
             });
         });
       });
