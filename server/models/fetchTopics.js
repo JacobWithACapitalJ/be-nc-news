@@ -7,9 +7,6 @@ function fetchTopics() {
     .returning("*")
     .then(results => {
       return results;
-    })
-    .catch(err => {
-      next(err);
     });
 }
 function fetchTopicSlug(slug) {
@@ -20,9 +17,6 @@ function fetchTopicSlug(slug) {
     .returning("*")
     .then(results => {
       return results;
-    })
-    .catch(err => {
-      next(err);
     });
 }
 module.exports = { fetchTopics, fetchTopicSlug };

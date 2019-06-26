@@ -7,12 +7,15 @@ function getTopics(req, res, next) {
 }
 function GetTopicSlug(req, res, next) {
   const { slug } = req.params;
-  console.log(slug);
-  fetchTopicSlug(slug).then(results => {
-    if (results.length === 0) {
-      return Promise.reject({ status: 404, msg: "not found" });
-    }
-    res.status(200).send(results);
-  });
+
+  fetchTopicSlug(slug)
+    .then(results => {
+      if (results.length === 0) {
+        return Promise.reject({ msg: "not found" });
+      } else {
+        res.status(200).send(results);
+      }
+    })
+    .catch(next);
 }
 module.exports = { getTopics, GetTopicSlug };

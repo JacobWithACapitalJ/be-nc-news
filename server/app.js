@@ -7,6 +7,8 @@ app.use("/api", apiRouter);
 // app.all("/*", (req, res, next) => {
 //   next({ status: 404, message: "not found" });
 // });
-// app.use(handlePSQL400Errors);
+app.use((err, req, res, next) => {
+  res.status(404).send(err);
+});
 
 module.exports = app;
