@@ -170,7 +170,7 @@ describe("/api", () => {
         });
       });
     });
-    describe.only("/:article_id/comments", () => {
+    describe("/:article_id/comments", () => {
       describe("GET", () => {
         it("returns all comments for an article", () => {
           return request
@@ -190,7 +190,7 @@ describe("/api", () => {
           return request.get("/api/articles/99/comments").expect(404);
         });
       });
-      describe("POST", () => {
+      describe.only("POST", () => {
         it("creates a new comment with keys username and body", () => {
           return request
             .post("/api/articles/1/comments")
@@ -199,6 +199,12 @@ describe("/api", () => {
             .then(result => {
               expect(result.body[0]).includes.keys("comment_id");
             });
+        });
+        it("returns 400 when username is not in users table", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({ username: "test", body: "this is just a test" })
+            .expect(400);
         });
       });
     });
