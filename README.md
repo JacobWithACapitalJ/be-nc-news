@@ -1,13 +1,13 @@
-#nc-news
+# nc-news
 
-##requirements
+## requirements
 
 - postgress (pg)
 - knex
 - express
 - heroku
 
-###devDependencies
+### devDependencies
 
 - chai
 - chai-sorted
