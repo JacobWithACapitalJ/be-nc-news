@@ -13,6 +13,20 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
+  describe.only("/", () => {
+    it("provides an object with an overveiw of paths", () => {
+      return request
+        .get("/api")
+        .expect(200)
+        .then(results => {
+          expect(results.body).includes.keys(
+            "GET /api",
+            "GET /api/topics",
+            "GET /api/articles"
+          );
+        });
+    });
+  });
   describe("/users", () => {
     describe("/:username", () => {
       describe("GET", () => {
