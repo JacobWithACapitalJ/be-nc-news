@@ -58,183 +58,180 @@ Each endpoint is tested for the correct status code, output and tested against i
 
 For example, the `/api/articles` endpoint was tested both `GET` and `PATCH` requests using mocha & chai.
 
-```npm test
-
+```javascript
 describe("GET", () => {
-      it("returns status:200 and all article data", () => {
+  it("returns status:200 and all article data", () => {
+    return request
+      .get("/api/articles")
+      .expect(200)
+      .then(results => {
+        expect(results.body[0]).includes.keys(
+          "title",
+          "author",
+          "body",
+          "topic",
+          "article_id",
+          "comments",
+          "created_at"
+        );
+      });
+  });
+  it("returns a value for the number of comments related to that article", () => {
+    return request
+      .get("/api/articles")
+      .expect(200)
+      .then(results => {
+        expect(results.body[0].comments).to.equal(13);
+      });
+  });
+  describe("QUERIES", () => {
+    describe("?sort_by=", () => {
+      it("sorts articles by the specified collumn", () => {
         return request
-          .get("/api/articles")
+          .get("/api/articles?sort_by=votes") //should now work for type coercion of comments
           .expect(200)
           .then(results => {
-            expect(results.body[0]).includes.keys(
-              "title",
-              "author",
-              "body",
-              "topic",
-              "article_id",
-              "comments",
-              "created_at"
-            );
+            expect(results.body).to.be.sortedBy("votes", {
+              descending: true
+            });
           });
       });
-      it("returns a value for the number of comments related to that article", () => {
+      it("takes an order_by query to sort the data", () => {
         return request
-          .get("/api/articles")
+          .get("/api/articles?sort_by=votes&order_by=asc")
           .expect(200)
           .then(results => {
-            expect(results.body[0].comments).to.equal(13);
+            expect(results.body).to.be.sortedBy("votes", {
+              descending: false
+            });
           });
       });
-      describe("QUERIES", () => {
-        describe("?sort_by=", () => {
-          it("sorts articles by the specified collumn", () => {
-            return request
-              .get("/api/articles?sort_by=votes") //should now work for type coercion of comments
-              .expect(200)
-              .then(results => {
-                expect(results.body).to.be.sortedBy("votes", {
-                  descending: true
-                });
-              });
+      it("returns 400 error when incorect sort_by", () => {
+        return request
+          .get("/api/articles?sort_by=invalid")
+          .expect(400)
+          .then(results => {
+            expect(results.error.text).to.equal("bad request");
           });
-          it("takes an order_by query to sort the data", () => {
-            return request
-              .get("/api/articles?sort_by=votes&order_by=asc")
-              .expect(200)
-              .then(results => {
-                expect(results.body).to.be.sortedBy("votes", {
-                  descending: false
-                });
-              });
-          });
-          it("returns 400 error when incorect sort_by", () => {
-            return request
-              .get("/api/articles?sort_by=invalid")
-              .expect(400)
-              .then(results => {
-                expect(results.error.text).to.equal("bad request");
-              });
-          });
-        });
-        describe("?author=", () => {
-          it("returns filtered data for specified author query", () => {
-            return request
-              .get("/api/articles?author=rogersop")
-              .expect(200)
-              .then(results => {
-                results.body.forEach(obj => {
-                  expect(obj.author).to.equal("rogersop");
-                });
-              });
-          });
-          it("returns 404 with incoreect username", () => {
-            return request
-              .get("/api/articles?author=invalidauthor")
-              .expect(404)
-              .then(results => {
-                expect(results.error.text).to.equal("not found");
-              });
-          });
-        });
-        describe("?topic=", () => {
-          it("filters by topic query", () => {
-            return request
-              .get("/api/articles?topic=mitch")
-              .expect(200)
-              .then(results => {
-                results.body.forEach(obj => {
-                  expect(obj.topic).to.equal("mitch");
-                });
-              });
-          });
-          it("returns 400 when invalid topic", () => {
-            return request
-              .get("/api/articles?topic=invalidtopic")
-              .expect(404)
-              .then(results => {
-                expect(results.error.text).to.equal("not found");
-              });
-          });
-        });
-      });
-      describe("/:article_id", () => {
-        it("returns status:200 and a single result", () => {
-          return request
-            .get("/api/articles/1")
-            .expect(200)
-            .then(results => {
-              expect(results.body.length).to.equal(1);
-            });
-        });
-        it("returns with a single article", () => {
-          return request.get("/api/articles/1").then(results => {
-            expect(results.body[0]).includes.keys(
-              "title",
-              "author",
-              "body",
-              "topic",
-              "article_id",
-              "comments",
-              "created_at"
-            );
-          });
-        });
-        it("returns an error with an incorrect ID", () => {
-          return request
-            .get("/api/articles/9999")
-            .expect(404)
-            .then(result => {
-              expect(result.error.text).to.eql("not found");
-            });
-        });
       });
     });
-    describe("PATCH", () => {
-      describe("/:article_id", () => {
-        it("returns with 201", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ inc_votes: 1 })
-            .expect(201);
-        });
-        it("Returns with updated increment of votes for article of that ID", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ inc_votes: 1 })
-            .then(result => {
-              expect(result.body[0].votes).to.equal(101);
+    describe("?author=", () => {
+      it("returns filtered data for specified author query", () => {
+        return request
+          .get("/api/articles?author=rogersop")
+          .expect(200)
+          .then(results => {
+            results.body.forEach(obj => {
+              expect(obj.author).to.equal("rogersop");
             });
-        });
-        it("Returns with updated decrement of votes for article of that ID", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ inc_votes: -1 })
-            .then(result => {
-              expect(result.body[0].votes).to.equal(99);
-            });
-        });
-        it("responds with a 400 error when incorrect body supplied", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ something_else: "hello" })
-            .expect(400)
-            .then(result => {
-              expect(result.error.text).to.equal("bad request");
-            });
-        });
-        it("responds with 400 error when body value is not an integer", () => {
-          return request
-            .patch("/api/articles/1")
-            .send({ inc_votes: "hello" })
-            .expect(400)
-            .then(result => {
-              expect(result.error.text).to.equal("bad request");
-            });
-        });
+          });
+      });
+      it("returns 404 with incoreect username", () => {
+        return request
+          .get("/api/articles?author=invalidauthor")
+          .expect(404)
+          .then(results => {
+            expect(results.error.text).to.equal("not found");
+          });
       });
     });
-
-
+    describe("?topic=", () => {
+      it("filters by topic query", () => {
+        return request
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(results => {
+            results.body.forEach(obj => {
+              expect(obj.topic).to.equal("mitch");
+            });
+          });
+      });
+      it("returns 400 when invalid topic", () => {
+        return request
+          .get("/api/articles?topic=invalidtopic")
+          .expect(404)
+          .then(results => {
+            expect(results.error.text).to.equal("not found");
+          });
+      });
+    });
+  });
+  describe("/:article_id", () => {
+    it("returns status:200 and a single result", () => {
+      return request
+        .get("/api/articles/1")
+        .expect(200)
+        .then(results => {
+          expect(results.body.length).to.equal(1);
+        });
+    });
+    it("returns with a single article", () => {
+      return request.get("/api/articles/1").then(results => {
+        expect(results.body[0]).includes.keys(
+          "title",
+          "author",
+          "body",
+          "topic",
+          "article_id",
+          "comments",
+          "created_at"
+        );
+      });
+    });
+    it("returns an error with an incorrect ID", () => {
+      return request
+        .get("/api/articles/9999")
+        .expect(404)
+        .then(result => {
+          expect(result.error.text).to.eql("not found");
+        });
+    });
+  });
+});
+describe("PATCH", () => {
+  describe("/:article_id", () => {
+    it("returns with 201", () => {
+      return request
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(201);
+    });
+    it("Returns with updated increment of votes for article of that ID", () => {
+      return request
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .then(result => {
+          expect(result.body[0].votes).to.equal(101);
+        });
+    });
+    it("Returns with updated decrement of votes for article of that ID", () => {
+      return request
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .then(result => {
+          expect(result.body[0].votes).to.equal(99);
+        });
+    });
+    it("responds with a 400 error when incorrect body supplied", () => {
+      return request
+        .patch("/api/articles/1")
+        .send({ something_else: "hello" })
+        .expect(400)
+        .then(result => {
+          expect(result.error.text).to.equal("bad request");
+        });
+    });
+    it("responds with 400 error when body value is not an integer", () => {
+      return request
+        .patch("/api/articles/1")
+        .send({ inc_votes: "hello" })
+        .expect(400)
+        .then(result => {
+          expect(result.error.text).to.equal("bad request");
+        });
+    });
+  });
+});
 ```
 
 Tests were used to determine the correct keys of data were being recieved as opposed to the values of data which could have changed during testing of the database.
