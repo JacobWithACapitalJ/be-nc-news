@@ -34,7 +34,13 @@ npm run set-env-test
 
 ```
 
-The code for setting the enviroment can be found in `env-set.js`
+The code for setting the enviroment can be found in `env-set.js`.
+
+To setup the databases run the following:
+
+```bash
+npm run setup-dbs
+```
 
 The tests on the endpoints can be run using:
 
