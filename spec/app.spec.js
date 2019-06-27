@@ -13,7 +13,7 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
-  describe.only("/", () => {
+  describe("/", () => {
     it("provides an object with an overveiw of paths", () => {
       return request
         .get("/api")
