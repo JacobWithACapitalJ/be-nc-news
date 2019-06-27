@@ -101,7 +101,7 @@ describe("/api", () => {
           .get("/api/articles")
           .expect(200)
           .then(results => {
-            expect(results.body[3].comments).to.equal("2");
+            expect(results.body[0].comments).to.equal(13);
           });
       });
       describe("QUERIES", () => {
@@ -335,7 +335,7 @@ describe("/api", () => {
       });
     });
   });
-  describe.only("/comments", () => {
+  describe("/comments", () => {
     describe("/:comment_id", () => {
       describe("PATCH", () => {
         it("updates the votes on a comment", () => {
@@ -373,6 +373,22 @@ describe("/api", () => {
             .expect(204)
             .then(result => {
               expect(result.body).to.eql({});
+            });
+        });
+        it("returns 404 when incrorect ID gievn", () => {
+          return request
+            .delete("/api/comments/99")
+            .expect(404)
+            .then(result => {
+              expect(result.error.text).to.eql("not found");
+            });
+        });
+        it("returns 400 when text given as ID", () => {
+          return request
+            .delete("/api/comments/thiserror")
+            .expect(400)
+            .then(result => {
+              expect(result.error.text).to.eql("bad request");
             });
         });
       });

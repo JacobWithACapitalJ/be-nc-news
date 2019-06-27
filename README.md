@@ -134,8 +134,8 @@ GET /api/articles/:article_id/comments ---XXX---
 
 GET /api/articles ---XXX---
 
-PATCH /api/comments/:comment_id
-DELETE /api/comments/:comment_id
+PATCH /api/comments/:comment_id ---XXX---
+DELETE /api/comments/:comment_id ---XXX---
 
 GET /api
 ```
