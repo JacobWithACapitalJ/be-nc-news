@@ -1,7 +1,9 @@
-// const testData = require("./test-data/index");
-// const devData = require("./development-data/index");
+const test = require("./test-data/index");
+const development = require("./development-data/index");
+const data = { test, development, production: development };
 const seed = require("./seeds/seed");
 process.env.NODE_ENV === "test"
-  ? (testData = require("./test-data/index"))
-  : (testData = require("./development-data/index"));
+  ? (testData = data.test)
+  : (testData = data.development);
+
 module.exports = testData;
