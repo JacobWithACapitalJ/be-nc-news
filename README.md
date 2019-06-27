@@ -129,10 +129,10 @@ GET /api/users/:username ---XXX---
 GET /api/articles/:article_id ---XXX---
 PATCH /api/articles/:article_id ---XXX---
 
-POST /api/articles/:article_id/comments
-GET /api/articles/:article_id/comments
+POST /api/articles/:article_id/comments ---XXX---
+GET /api/articles/:article_id/comments ---XXX---
 
-GET /api/articles
+GET /api/articles ---XXX---
 
 PATCH /api/comments/:comment_id
 DELETE /api/comments/:comment_id

@@ -1,5 +1,10 @@
 const connection = require("./index");
-function fetchArticles(article_id) {
+function fetchArticles(
+  article_id,
+  sort_by = "created_at",
+  order_by = "desc",
+  author
+) {
   return connection
     .count({ comments: "comments.article_id" })
     .select("articles.*")
@@ -11,9 +16,18 @@ function fetchArticles(article_id) {
         query.where("articles.article_id", "=", article_id);
       }
     })
+    .orderBy(sort_by, order_by)
     .returning("*")
+    .modify(query => {
+      if (author) {
+        query.where("articles.author", "=", author);
+      }
+    })
     .then(results => {
-      return results;
+      return results.map(obj => {
+        obj.comments = obj.comments * 1; //type coercion to int
+        return obj;
+      });
     });
 }
 

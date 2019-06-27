@@ -3,6 +3,8 @@ const { expect } = require("chai");
 const app = require("../server/app");
 const request = require("supertest")(app);
 const connection = require("../server/models/index");
+const chai = require("chai");
+chai.use(require("chai-sorted"));
 
 describe("/api", () => {
   beforeEach(() => {
@@ -93,6 +95,66 @@ describe("/api", () => {
               "created_at"
             );
           });
+      });
+      it("returns a value for the number of comments related to that article", () => {
+        return request
+          .get("/api/articles")
+          .expect(200)
+          .then(results => {
+            expect(results.body[3].comments).to.equal("2");
+          });
+      });
+      describe.only("QUERYS", () => {
+        describe("?sort_by=", () => {
+          it("sorts articles by the specified collumn", () => {
+            return request
+              .get("/api/articles?sort_by=votes") //should now work for type coercion of comments
+              .expect(200)
+              .then(results => {
+                expect(results.body).to.be.sortedBy("votes", {
+                  descending: true
+                });
+              });
+          });
+          it("takes an order_by query to sort the data", () => {
+            return request
+              .get("/api/articles?sort_by=votes&order_by=asc")
+              .expect(200)
+              .then(results => {
+                expect(results.body).to.be.sortedBy("votes", {
+                  descending: false
+                });
+              });
+          });
+          it("returns 400 error when incorect sort_by", () => {
+            return request
+              .get("/api/articles?sort_by=invalid")
+              .expect(400)
+              .then(results => {
+                expect(results.error.text).to.equal("bad request");
+              });
+          });
+        });
+        describe("?author=", () => {
+          it("returns filtered data for specified author query", () => {
+            return request
+              .get("/api/articles?author=rogersop")
+              .expect(200)
+              .then(results => {
+                results.body.forEach(obj => {
+                  expect(obj.author).to.equal("rogersop");
+                });
+              });
+          });
+          it("returns 404 with incoreect username", () => {
+            return request
+              .get("/api/articles?author=invalidauthor")
+              .expect(404)
+              .then(results => {
+                expect(results.error.text).to.equal("not found");
+              });
+          });
+        });
       });
       describe("/:article_id", () => {
         it("returns status:200 and a single result", () => {
@@ -190,7 +252,7 @@ describe("/api", () => {
           return request.get("/api/articles/99/comments").expect(404);
         });
       });
-      describe.only("POST", () => {
+      describe("POST", () => {
         it("creates a new comment with keys username and body", () => {
           return request
             .post("/api/articles/1/comments")
@@ -205,6 +267,50 @@ describe("/api", () => {
             .post("/api/articles/1/comments")
             .send({ username: "test", body: "this is just a test" })
             .expect(400);
+        });
+      });
+      describe("QUERYS", () => {
+        describe("?sort_by=", () => {
+          it("sorts comments by date by default", () => {
+            return request
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(results => {
+                expect(results.body).to.be.sortedBy("created_at", {
+                  descending: true
+                });
+              });
+          });
+          it("sorts descending by column name from query", () => {
+            return request
+              .get("/api/articles/1/comments?sort_by=votes")
+              .expect(200)
+              .then(results => {
+                expect(results.body).to.be.sortedBy("votes", {
+                  descending: true
+                });
+              });
+          });
+          it("returns status:400 for an incorrect query", () => {
+            return request
+              .get("/api/articles/1/comments?sort_by=invalid")
+              .expect(400)
+              .then(results => {
+                expect(results.error.text).to.equal("bad request");
+              });
+          });
+        });
+        describe("?order_by=asc", () => {
+          it("returns sorted by query", () => {
+            return request
+              .get("/api/articles/1/comments?sort_by=votes&order_by=asc")
+              .expect(200)
+              .then(results => {
+                expect(results.body).to.be.sortedBy("votes", {
+                  descending: false
+                });
+              });
+          });
         });
       });
     });
