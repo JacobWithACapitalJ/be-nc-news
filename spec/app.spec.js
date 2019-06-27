@@ -104,7 +104,7 @@ describe("/api", () => {
             expect(results.body[3].comments).to.equal("2");
           });
       });
-      describe.only("QUERYS", () => {
+      describe("QUERIES", () => {
         describe("?sort_by=", () => {
           it("sorts articles by the specified collumn", () => {
             return request
@@ -149,6 +149,26 @@ describe("/api", () => {
           it("returns 404 with incoreect username", () => {
             return request
               .get("/api/articles?author=invalidauthor")
+              .expect(404)
+              .then(results => {
+                expect(results.error.text).to.equal("not found");
+              });
+          });
+        });
+        describe("?topic=", () => {
+          it("filters by topic query", () => {
+            return request
+              .get("/api/articles?topic=mitch")
+              .expect(200)
+              .then(results => {
+                results.body.forEach(obj => {
+                  expect(obj.topic).to.equal("mitch");
+                });
+              });
+          });
+          it("returns 400 when invalid topic", () => {
+            return request
+              .get("/api/articles?topic=invalidtopic")
               .expect(404)
               .then(results => {
                 expect(results.error.text).to.equal("not found");
@@ -311,6 +331,49 @@ describe("/api", () => {
                 });
               });
           });
+        });
+      });
+    });
+  });
+  describe.only("/comments", () => {
+    describe("/:comment_id", () => {
+      describe("PATCH", () => {
+        it("updates the votes on a comment", () => {
+          return request
+            .patch("/api/comments/1")
+            .send({ inc_votes: 1 })
+            .expect(201)
+            .then(result => {
+              expect(result.body).includes.keys("comment_id", "votes");
+            });
+        });
+        it("returns 404 when id is not found", () => {
+          return request
+            .patch("/api/comments/999")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(result => {
+              expect(result.error.text).to.equal("not found");
+            });
+        });
+        it("returns 400 error when id is given as text", () => {
+          return request
+            .patch("/api/comments/invalid")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(result => {
+              expect(result.error.text).to.equal("bad request");
+            });
+        });
+      });
+      describe("DELETE", () => {
+        it("deletes the comment by given id", () => {
+          return request
+            .delete("/api/comments/1")
+            .expect(204)
+            .then(result => {
+              expect(result.body).to.eql({});
+            });
         });
       });
     });

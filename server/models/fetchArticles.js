@@ -3,7 +3,8 @@ function fetchArticles(
   article_id,
   sort_by = "created_at",
   order_by = "desc",
-  author
+  author,
+  topic
 ) {
   return connection
     .count({ comments: "comments.article_id" })
@@ -21,6 +22,9 @@ function fetchArticles(
     .modify(query => {
       if (author) {
         query.where("articles.author", "=", author);
+      }
+      if (topic) {
+        query.where("articles.topic", "=", topic);
       }
     })
     .then(results => {
