@@ -36,6 +36,14 @@ npm run set-env-test
 
 The code for setting the enviroment can be found in `env-set.js`.
 
+To use the local env to test, a username and password must be provided to postgresql. This can be done by creating a `config.js` file in the root directory an exporting an object with the keys `username` and `password`:
+
+```javascript
+const username = "name";
+const password = "password";
+module.exports = { username, password };
+```
+
 To setup the databases run the following:
 
 ```bash
@@ -245,6 +253,14 @@ Tests were used to determine the correct keys of data were being recieved as opp
 Further testing was conducted on parametric endpoints on the `/api/articles` endpoint as well as their corresponding `GET` and `POST` requests.
 
 Queries were tested in much the same way, taking advanted of the `chai-sorted` package in order to test the queries ability to order the data in the response.
+
+## deployment
+
+This repo is host on Heroku and can be found by using the following link: [jacobs-nc-news](https://jacobs-nc-news.herokuapp.com/api)
+Deployment requires the setup of heroku to host the server.
+(alternitavly, local hosting can be forced in the `/sever/listen.js` by defining a port to host on).
+
+I order to host your own copy of this repo, follow the instructions on the [heroku](https://www.heroku.com/) website.
 
 ## Endpoints completed
 
