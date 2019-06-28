@@ -4,12 +4,14 @@ function getArticles(req, res, next) {
   const { article_id } = req.params;
   const { sort_by, order_by, author, topic } = req.query;
   fetchArticles(article_id, sort_by, order_by, author, topic)
-    .then(results => {
-      if (results.length === 0) {
+    .then(articles => {
+      if (articles.length === 0) {
         return Promise.reject({ code: 404, msg: "not found" });
-      } else {
-        res.status(200).send(results);
+      } else if (articles.length === 1) {
+        const article = articles[0];
+        res.status(200).send(article);
       }
+      res.status(200).send(articles);
     })
     .catch(next);
 }
@@ -24,8 +26,8 @@ function patchArticles(req, res, next) {
     return next({ code: 400, msg: "bad request" });
   }
   updateArticles(article_id, body)
-    .then(result => {
-      res.status(201).send(result);
+    .then(article => {
+      res.status(200).send(article);
     })
     .catch(next);
 }

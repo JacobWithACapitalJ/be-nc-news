@@ -13,8 +13,8 @@ function fetchComments(article_id, sort_by, order_by) {
       }
     })
     .returning("*")
-    .then(results => {
-      return results;
+    .then(comments => {
+      return comments;
     });
 }
 
@@ -23,8 +23,8 @@ function createComments(comment) {
     .insert(comment)
     .into("comments")
     .returning("*")
-    .then(result => {
-      return result;
+    .then(createdComment => {
+      return createdComment;
     });
 }
 
@@ -39,8 +39,8 @@ function updateComments(comment_id, body) {
     })
     .where("comments.comment_id", "=", comment_id)
     .returning("*")
-    .then(result => {
-      return result[0];
+    .then(updatedComment => {
+      return updatedComment[0];
     });
 }
 

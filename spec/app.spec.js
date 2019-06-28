@@ -78,7 +78,7 @@ describe("/api", () => {
             .get("/api/topics/mitch")
             .expect(200)
             .then(result => {
-              expect(result.body[0].slug).to.eql("mitch");
+              expect(result.body.slug).to.eql("mitch");
             });
         });
         it("returns a 404 error with an invalid slug", () => {
@@ -105,7 +105,7 @@ describe("/api", () => {
               "body",
               "topic",
               "article_id",
-              "comments",
+              "comments_count",
               "created_at"
             );
           });
@@ -115,7 +115,7 @@ describe("/api", () => {
           .get("/api/articles")
           .expect(200)
           .then(results => {
-            expect(results.body[0].comments).to.equal(13);
+            expect(results.body[0].comments_count).to.equal(13);
           });
       });
       describe("QUERIES", () => {
@@ -191,23 +191,18 @@ describe("/api", () => {
         });
       });
       describe("/:article_id", () => {
-        it("returns status:200 and a single result", () => {
-          return request
-            .get("/api/articles/1")
-            .expect(200)
-            .then(results => {
-              expect(results.body.length).to.equal(1);
-            });
+        it("returns status:200", () => {
+          return request.get("/api/articles/1").expect(200);
         });
         it("returns with a single article", () => {
           return request.get("/api/articles/1").then(results => {
-            expect(results.body[0]).includes.keys(
+            expect(results.body).includes.keys(
               "title",
               "author",
               "body",
               "topic",
               "article_id",
-              "comments",
+              "comments_count",
               "created_at"
             );
           });
@@ -224,11 +219,11 @@ describe("/api", () => {
     });
     describe("PATCH", () => {
       describe("/:article_id", () => {
-        it("returns with 201", () => {
+        it("returns with 200", () => {
           return request
             .patch("/api/articles/1")
             .send({ inc_votes: 1 })
-            .expect(201);
+            .expect(200);
         });
         it("Returns with updated increment of votes for article of that ID", () => {
           return request
@@ -284,6 +279,14 @@ describe("/api", () => {
         });
         it("returns 404 when article_id is incorect", () => {
           return request.get("/api/articles/99/comments").expect(404);
+        });
+        it("returns with empty array when valid ID but no comments", () => {
+          return request
+            .get("/api/articles/2/comments")
+            .expect(200)
+            .then(results => {
+              expect(results.body).to.eql([]);
+            });
         });
       });
       describe("POST", () => {
@@ -356,7 +359,7 @@ describe("/api", () => {
           return request
             .patch("/api/comments/1")
             .send({ inc_votes: 1 })
-            .expect(201)
+            .expect(200)
             .then(result => {
               expect(result.body).includes.keys("comment_id", "votes");
             });

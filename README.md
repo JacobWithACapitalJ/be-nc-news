@@ -26,16 +26,6 @@ npm install
 
 ## Running the tests
 
-Firstly we will need to setup the process enviroment to test, in order to use the test data. This can be done by using the following npm command:
-
-```Bash
-
-npm run set-env-test
-
-```
-
-The code for setting the enviroment can be found in `env-set.js`.
-
 To use the local env to test, a username and password must be provided to postgresql. This can be done by creating a `config.js` file in the root directory an exporting an object with the keys `username` and `password`:
 
 ```javascript

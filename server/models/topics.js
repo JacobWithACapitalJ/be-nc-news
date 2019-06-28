@@ -5,8 +5,8 @@ function fetchTopics() {
     .select("*")
     .from("topics")
     .returning("*")
-    .then(results => {
-      return results;
+    .then(topics => {
+      return topics;
     });
 }
 function fetchTopicSlug(slug) {
@@ -15,8 +15,8 @@ function fetchTopicSlug(slug) {
     .from("topics")
     .where("slug", "=", slug)
     .returning("*")
-    .then(results => {
-      return results;
+    .then(topic => {
+      return topic;
     });
 }
 module.exports = { fetchTopics, fetchTopicSlug };

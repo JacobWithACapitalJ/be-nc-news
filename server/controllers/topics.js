@@ -2,26 +2,26 @@ const { fetchTopics, fetchTopicSlug } = require("../models/topics");
 
 function getTopics(req, res, next) {
   fetchTopics()
-    .then(results => {
-      if (results.length === 0) {
+    .then(topics => {
+      if (topics.length === 0) {
         return Promise.reject({ code: 404, msg: "not found" });
       } else {
-        res.status(200).send(results);
+        res.status(200).send(topics);
       }
     })
     .catch(next);
 }
-function GetTopicSlug(req, res, next) {
+function getTopicSlug(req, res, next) {
   const { slug } = req.params;
 
   fetchTopicSlug(slug)
-    .then(results => {
-      if (results.length === 0) {
+    .then(topic => {
+      if (topic.length === 0) {
         return Promise.reject({ code: 404, msg: "not found" });
-      } else {
-        res.status(200).send(results);
+      } else if (topic.length === 1) {
+        res.status(200).send(topic[0]);
       }
     })
     .catch(next);
 }
-module.exports = { getTopics, GetTopicSlug };
+module.exports = { getTopics, getTopicSlug };

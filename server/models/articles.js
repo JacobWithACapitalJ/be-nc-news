@@ -7,7 +7,7 @@ function fetchArticles(
   topic
 ) {
   return connection
-    .count({ comments: "comments.article_id" })
+    .count({ comments_count: "comments.article_id" })
     .select("articles.*")
     .from("articles")
     .groupBy("articles.article_id")
@@ -27,9 +27,9 @@ function fetchArticles(
         query.where("articles.topic", "=", topic);
       }
     })
-    .then(results => {
-      return results.map(obj => {
-        obj.comments = obj.comments * 1; //type coercion to int
+    .then(articles => {
+      return articles.map(obj => {
+        obj.comments_count = obj.comments_count * 1; //type coercion to int
         return obj;
       });
     });
@@ -45,8 +45,8 @@ function updateArticles(article_id, body) {
     })
     .where("articles.article_id", "=", article_id)
     .returning("*")
-    .then(result => {
-      return result;
+    .then(article => {
+      return article;
     });
 }
 
