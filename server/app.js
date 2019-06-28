@@ -3,11 +3,11 @@ const app = express();
 const apiRouter = require("./routes/api-router");
 const handle400 = require("./errors/errors");
 const pug = require("pug");
-
+app.set("view engine", "pug");
 app.use(express.json());
 app.use("/api", apiRouter);
 app.use("/", (req, res) => {
-  pug.render("index");
+  res.render("index");
 });
 app.use(handle400);
 
