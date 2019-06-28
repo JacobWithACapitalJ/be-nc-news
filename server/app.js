@@ -5,7 +5,9 @@ const handle400 = require("./errors/errors");
 
 app.use(express.json());
 app.use("/api", apiRouter);
-
+app.use("/", (req, res) => {
+  res.render("index");
+});
 app.use(handle400);
 
 module.exports = app;
