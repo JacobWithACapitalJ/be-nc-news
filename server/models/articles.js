@@ -34,7 +34,7 @@ function fetchArticles(
       });
     });
 }
-function updateArticles(article_id, body) {
+function updateArticles(article_id, body = { inc_votes: 0 }) {
   return connection
     .select("*")
     .from("articles")

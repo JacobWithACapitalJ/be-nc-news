@@ -28,7 +28,7 @@ function createComments(comment) {
     });
 }
 
-function updateComments(comment_id, body) {
+function updateComments(comment_id, body = { inc_votes: 0 }) {
   return connection
     .select("*")
     .from("comments")
