@@ -1,4 +1,4 @@
-const fetchUser = require("../models/fetchUser");
+const { fetchUser } = require("../models/users");
 
 function getUser(req, res, next) {
   const { username } = req.params;
@@ -13,4 +13,4 @@ function getUser(req, res, next) {
     .catch(next);
 }
 
-module.exports = getUser;
+module.exports = { getUser };

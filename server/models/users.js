@@ -1,4 +1,4 @@
-const connection = require("./index");
+const connection = require("../../connection");
 function fetchUser(username) {
   return connection
     .select("*")
@@ -9,4 +9,4 @@ function fetchUser(username) {
       return result;
     });
 }
-module.exports = fetchUser;
+module.exports = { fetchUser };

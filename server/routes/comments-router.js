@@ -1,5 +1,4 @@
-const patchComments = require("../controllers/patch-comments");
-const deleteComments = require("../controllers/delete-comments");
+const { patchComments, deleteComments } = require("../controllers/comments");
 const commentsRouter = require("express").Router();
 
 commentsRouter

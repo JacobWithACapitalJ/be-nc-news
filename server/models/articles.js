@@ -1,4 +1,4 @@
-const connection = require("./index");
+const connection = require("../../connection");
 function fetchArticles(
   article_id,
   sort_by = "created_at",
@@ -34,5 +34,20 @@ function fetchArticles(
       });
     });
 }
+function updateArticles(article_id, body) {
+  return connection
+    .select("*")
+    .from("articles")
+    .modify(query => {
+      if (body.inc_votes) {
+        return query.increment("votes", body.inc_votes);
+      }
+    })
+    .where("articles.article_id", "=", article_id)
+    .returning("*")
+    .then(result => {
+      return result;
+    });
+}
 
-module.exports = fetchArticles;
+module.exports = { fetchArticles, updateArticles };

@@ -1,4 +1,4 @@
-const connection = require("./index");
+const connection = require("../../connection");
 
 function fetchTopics() {
   return connection
