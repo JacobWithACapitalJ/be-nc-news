@@ -26,8 +26,8 @@
 ### PATCH `/api/articles/1`
 
 - ignore a `patch` request with no information in the request body, and send the unchanged article to the client
-- [ ]provide a default argument of `0` to the `increment` method, otherwise it will automatically increment by 1
-  ---XXX--- shouldn't need that? ---XXX---
+- [ ] provide a default argument of `0` to the `increment` method, otherwise it will automatically increment by 1
+      ---XXX--- shouldn't need that? ---XXX---
 
 ### GET `/api/articles/2/comments`
 
@@ -37,13 +37,13 @@
 
 ### POST `/api/articles/1/comments`
 
-error handle when the new comment does not include all the keys
+[x] error handle when the new comment does not include all the keys
 
-- use a 400: Bad Request status code when `POST` request does not include all the required keys
-- use `notNullable` in migrations for required columns
+- [x] use a 400: Bad Request status code when `POST` request does not include all the required keys
+- [x] use `notNullable` in migrations for required columns
 
 ### POST `/api/articles/10000/comments`
 
 Assertion: expected 400 to be one of [ 404, 422 ]
 
-- use a 404: Not Found _OR_ 422: Unprocessable Entity status code when `POST` contains a valid article ID that does not exist
+- [x] use a 404: Not Found _OR_ 422: Unprocessable Entity status code when `POST` contains a valid article ID that does not exist

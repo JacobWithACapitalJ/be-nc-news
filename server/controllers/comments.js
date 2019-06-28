@@ -46,10 +46,17 @@ function postComments(req, res, next) {
   comment.author = comment.username;
   delete comment.username;
   comment.article_id = article_id;
-
-  createComments(comment)
-    .then(createdComment => {
-      res.status(201).send(createdComment);
+  fetchArticles(article_id)
+    .then(article => {
+      if (article.length === 0) {
+        return Promise.reject({ code: 404, msg: "not found" });
+      } else {
+        createComments(comment)
+          .then(createdComment => {
+            res.status(201).send(createdComment);
+          })
+          .catch(next);
+      }
     })
     .catch(next);
 }

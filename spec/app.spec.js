@@ -305,6 +305,22 @@ describe("/api", () => {
             .send({ username: "test", body: "this is just a test" })
             .expect(400);
         });
+        it("returns 400 when keys of comment sent are not correct", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({
+              incorrect: "errors",
+              body: "this shouldn't work",
+              username: "butter_bridge"
+            })
+            .expect(400);
+        });
+        it("returns 404 when article_id not found", () => {
+          return request
+            .post("/api/articles/99/comments")
+            .send({ username: "butter_bridge", body: "this is just a test" })
+            .expect(404);
+        });
       });
       describe("QUERYS", () => {
         describe("?sort_by=", () => {
