@@ -427,4 +427,14 @@ describe("/api", () => {
       });
     });
   });
+  describe("/*", () => {
+    it("returns 405 on all invalid methods for each endpoint", () => {
+      return request
+        .delete("/api/articles")
+        .expect(405)
+        .then(result => {
+          expect(result.error.text).to.equal("method not allowed");
+        });
+    });
+  });
 });

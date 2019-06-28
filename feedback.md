@@ -27,7 +27,6 @@
 
 - ignore a `patch` request with no information in the request body, and send the unchanged article to the client
 - [x] provide a default argument of `0` to the `increment` method, otherwise it will automatically increment by 1
-      ---XXX--- shouldn't need that? ---XXX---
 
 ### GET `/api/articles/2/comments`
 
