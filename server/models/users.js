@@ -1,4 +1,7 @@
 const connection = require("../../connection");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 function fetchUser(username) {
   return connection
     .select("*")
@@ -9,4 +12,20 @@ function fetchUser(username) {
       return result;
     });
 }
-module.exports = { fetchUser };
+
+function authUser(username, password) {
+  let dbPassword = "";
+  return fetchUser(username).then(user => {
+    dbPassword = user[0].password;
+    /
+    return bcrypt
+      .compare(password, dbPassword)
+      .then(same => {
+        
+        return same;
+      })
+      .catch(console.log);
+  });
+}
+
+module.exports = { fetchUser, authUser };

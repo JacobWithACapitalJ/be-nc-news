@@ -13,7 +13,7 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
-  describe.only("/", () => {
+  describe("/", () => {
     it("provides an object with an overveiw of paths", () => {
       return request
         .get("/api")
@@ -434,6 +434,27 @@ describe("/api", () => {
         .expect(405)
         .then(result => {
           expect(result.error.text).to.equal("method not allowed");
+        });
+    });
+  });
+  describe.only("/login", () => {
+    it("checks if users password matches hashed value in db", () => {
+      return request
+        .get("/api/login")
+        .send({ username: "butter_bridge", password: "password" })
+        .expect(200)
+        .then(result => {
+          // console.log(result.body);
+          expect(result.body.login).to.eql(true);
+        });
+    });
+    it("returns invalid message when password or username is incorrect", () => {
+      return request
+        .get("/api/login")
+        .send({ username: "butter_bridge", password: "invalidstuff" })
+        .expect(404)
+        .then(result => {
+          expect(result.error.text).to.eql("incorrect credentials");
         });
     });
   });

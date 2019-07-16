@@ -14,30 +14,15 @@ exports.seed = function(knex, Promise) {
     .rollback()
     .then(() => knex.migrate.latest())
     .then(() => {
-      //hash user data
-      // bcrypt.hash(document.password, saltRounds,
-      //   function (err, hashedPassword) {
-      //     if (err) {
-      //       next(err);
-      //     }
-      //     else {
-      //       document.password = hashedPassword;
-      //       next();
-
+      //hash passwords
       let hashedData = [...userData];
-
+      let salt = bcrypt.genSaltSync(saltRounds);
       hashedData.forEach((user, index) => {
-        bcrypt
-          .hash(user.password, saltRounds)
-          .then(hash => {
-            hashedData[index].password = hash;
-          })
-          .catch(console.log);
+        hashedData[index].password = bcrypt.hashSync(user.password, salt);
       });
 
       const topicsInsertions = knex("topics").insert(topicData);
       const usersInsertions = knex("users").insert(hashedData);
-
       return Promise.all([topicsInsertions, usersInsertions])
         .then(() => {
           modifiedArticleData = formatDate(articleData);

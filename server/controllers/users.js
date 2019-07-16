@@ -1,4 +1,4 @@
-const { fetchUser } = require("../models/users");
+const { fetchUser, authUser } = require("../models/users");
 
 function getUser(req, res, next) {
   const { username } = req.params;
@@ -13,4 +13,18 @@ function getUser(req, res, next) {
     .catch(next);
 }
 
-module.exports = { getUser };
+function loginUser(req, res, next) {
+  const { username, password } = req.body;
+
+  authUser(username, password)
+    .then(result => {
+      if (result === true) {
+        res.status(200).send({ login: result });
+      } else {
+        return Promise.reject({ code: 404, msg: "incorrect credentials" });
+      }
+    })
+    .catch(next);
+}
+
+module.exports = { getUser, loginUser };
