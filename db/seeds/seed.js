@@ -18,6 +18,9 @@ exports.seed = function(knex, Promise) {
       let hashedData = [...userData];
       let salt = bcrypt.genSaltSync(saltRounds);
       hashedData.forEach((user, index) => {
+        if (!hashedData[index].password) {
+          hashedData[index].password = "password";
+        }
         hashedData[index].password = bcrypt.hashSync(user.password, salt);
       });
 
