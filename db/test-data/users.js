@@ -4,7 +4,7 @@ module.exports = [
     name: "jonny",
     avatar_url:
       "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
-    password: "password"
+    password: "password123"
   },
   {
     username: "icellusedkars",
