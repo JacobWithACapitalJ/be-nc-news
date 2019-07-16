@@ -1,6 +1,7 @@
 const connection = require("../../connection");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 function fetchUser(username) {
   return connection

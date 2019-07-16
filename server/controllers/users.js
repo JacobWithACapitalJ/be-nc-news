@@ -1,4 +1,6 @@
 const { fetchUser, authUser } = require("../models/users");
+const { secret } = require("../../config");
+const jwt = require("jsonwebtoken");
 
 function getUser(req, res, next) {
   const { username } = req.params;
@@ -19,7 +21,14 @@ function loginUser(req, res, next) {
   authUser(username, password)
     .then(result => {
       if (result === true) {
-        res.status(200).send({ login: result });
+        const payload = { username };
+        const token = jwt.sign(payload, secret, {
+          expiresIn: "1h"
+        });
+        res
+          .cookie("token", token, { httpOnly: true })
+          .status(200)
+          .send({ login: result });
       } else {
         return Promise.reject({ code: 404, msg: "incorrect credentials" });
       }
