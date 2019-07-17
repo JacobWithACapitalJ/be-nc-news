@@ -13,7 +13,7 @@ apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/comments", commentsRouter);
 apiRouter.get("/", getEndpoints);
-apiRouter.get("/login", loginUser);
+apiRouter.post("/login", loginUser);
 apiRouter.use("/*", (req, res, next) => {
   next({ code: 405, msg: "method not allowed" });
 });

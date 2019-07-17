@@ -440,17 +440,17 @@ describe("/api", () => {
   describe.only("/login", () => {
     it("checks if users password matches hashed value in db", () => {
       return request
-        .get("/api/login")
+        .post("/api/login")
         .send({ username: "butter_bridge", password: "password" })
         .expect(200)
         .then(result => {
-          // console.log(result.body);
+          console.log(result.body);
           expect(result.body.login).to.eql(true);
         });
     });
     it("returns invalid message when password or username is incorrect", () => {
       return request
-        .get("/api/login")
+        .post("/api/login")
         .send({ username: "butter_bridge", password: "invalidstuff" })
         .expect(404)
         .then(result => {

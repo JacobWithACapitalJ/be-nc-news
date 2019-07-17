@@ -18,7 +18,6 @@ function authUser(username, password) {
   let dbPassword = "";
   return fetchUser(username).then(user => {
     dbPassword = user[0].password;
-
     return bcrypt
       .compare(password, dbPassword)
       .then(same => {

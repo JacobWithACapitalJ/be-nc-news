@@ -21,6 +21,7 @@ exports.seed = function(knex, Promise) {
         if (user.password === undefined) {
           hashedData[index].password = "password";
         }
+
         hashedData[index].password = bcrypt.hashSync(user.password, salt);
       });
 
