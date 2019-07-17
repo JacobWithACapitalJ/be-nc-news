@@ -10,6 +10,8 @@ articlesRouter
   .get(getArticles)
   .patch(patchArticles);
 articlesRouter.route("/:article_id/comments").get(getComments);
-articlesRouter.use("/:article_id/newComment", auth);
-articlesRouter.post("/:article_id/newComment", postComments);
+articlesRouter
+  .route("/:article_id/newComment")
+  .use(auth)
+  .post(postComments);
 module.exports = articlesRouter;
