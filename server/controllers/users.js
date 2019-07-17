@@ -1,7 +1,7 @@
 const { fetchUser, authUser } = require("../models/users");
-const { secret } = require("../../config");
+// const { secret } = require("../../config");
 const jwt = require("jsonwebtoken");
-
+const secret = "asecret";
 function getUser(req, res, next) {
   const { username } = req.params;
   fetchUser(username)
